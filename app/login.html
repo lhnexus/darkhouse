@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="User login Page">
+    <meta name="author" content="VinceZK">
+    <title>Login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Custom styles for this page -->
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body ng-app="login" ng-controller="loginCtrl">
+<div class="container">
+
+
+
+    <form class="form-signin" role="form" name="loginForm" ng-submit="processLogin()" novalidate>
+        <!-- SHOW ERROR/SUCCESS MESSAGES -->
+        <div class="message-area alert alert-danger" role="alert" id="messages" ng-show="message">
+            {{ message }}
+        </div>
+
+        <h3 class="form-signin-heading">
+            <span class="glyphicon glyphicon-tower"></span>
+            DarkHouse Sign in
+        </h3>
+
+        <!-- Email -->
+        <div id="email-group" class="form-group" ng-class="{ 'has-error' : errorEmail }">
+            <input type="email" class="form-control" placeholder="Email address" ng-model="formData.email" required autofocus>
+            <span class="help-block" ng-show="errorEmail">{{ errorEmail }}</span>
+        </div>
+
+        <!-- Password -->
+        <div id="password-group" class="form-group" ng-class="{ 'has-error' : errorPassword }">
+            <input type="password" class="form-control" placeholder="Password" ng-model="formData.password" required>
+            <span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
+        </div>
+
+        <!-- Renew Password inspection here! -->
+
+        <div ui-view autoscroll='true'></div>
+
+
+
+        <label class="checkbox">
+            <input type="checkbox" value="remember-me" ng-model="formData.rememberme"> Remember me
+        </label>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ SignIn }}</button>
+    </form>
+
+</div>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="scripts/angular/login.js"></script>
+<script src="scripts/controllers/loginCtrl.js"></script>
+<script src="scripts/services/authSer.js"></script>
+<script src="scripts/angular/directives.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<p>A universal data model that suits all objects still means Entity-Relationship model.
+But the realization is different compared with regular row-based design.
+In a style more like key-value DB, MultiTenancy DB(MDB in short) is running on traditional
+relationship database system(RDS in short).</p>
+
+<p>It is hard to give a definition to 'MDB'. I call it 'MDB' because the DB is designed
+for multi-tenancy. Which allows all tenancies run on the same data model, yet each
+tenancy can still customize it based on its own requirements and the data is isolated. </p>
+
+<p><b>Why a key-value DB is running on RDS?</b><br>
+    If you have deep dived into the database technology,you will find the fact that
+    all kinds of DB is key-value DB. Either column-store or row-store is key-value store in
+    fundamental. Document store and object store are of course key-value stores. The only difference
+    among them is how to define the "value" in "key-value" pairs. For example:
+    <li>If you define the "value" a row of a table data, then it is row-store,</li>
+    <li>If you define the "value" a column of a table data, then it is column-store,</li>
+    <li>And same with other types......</li>
+
+    So you can, of course using any kinds of DB to realize key-value style data model.
+    And RDS is the best choice for its muturity and stabilitiy.
+</p>
+
+<b>MDB defines the "value" to the value of each attribute</b>
+
+<p>The general idea is to break down a "row" into "attributes".
+    Let's first review some basic concepts of Entity-Relation model(copied from P.P.S. Chen).
+
+    <li>An entity is a "thing" which can be distinctly identified. A specific person, company or event is an
+    is an example of an entity.</li>
+    <li>A relationship is an association among entities. For instance, "father-son" is a relationship between
+    two "person" entities.</li>
+    <li>The role of an entity in a relationship is the function that it performs in the relationship. "Husband"
+    and "wife" are roles.</li>
+    <li>The information about an entity or a relationship is obtained by observation or measurement, and is expressed
+    by a set of attribute-value pairs. "3", "red", "Peter", and "Johnson" are values. Values are classified into different
+    value sets, such as FEET, COLOR, FIRST-NAME, and LAST-NAME. There is a predicate associated with each value set to
+    test whether a value belongs to it. </li>
+    <li>An attribute can be formally defined as a function which maps from an entity set or a relationship set into
+    a value set.</li>
+   <img src="images/er_example.jpg" class="img-responsive">
+</p>
+
+<p>
+  The essential ER model didn't say anything about how to store and format data. But why most of the DB systems store values
+     as close as possible? The reasons I think are:
+    <li>People feel comfortable with table format views of data.</li>
+    <li>OLTP Performance: values of an entity store together(row-store) makes it easy to read and update;</li>
+    <li>OLAP Performance: values of an attribute store together(column-store) makes it easy to do aggregation and analysis;</li>
+    <li>The data size is not such large that putting affinity values together will solve most of the issues.</li>
+</p>
+
+<b>Now it's time to change!</b>
+<p>Applications nowadays are not designed to a small group of people, but to the people all over the world.
+    They will generate huge size of data everyday. They should provide high flexibility, and support somehow "Out-Of-Control".
+   Scheme-less document stores have already been proven their ability in big data processing. But the world is built
+    on schemes. A man is composed by cells, a cell is composed by molecules, a molecule is composed by atoms,
+    a atom is composed by subatomoic particles...... Physicists try their best to find the ultimate scheme of everything.
+    We therefore should gain the ability to deal with massive smaller units of information.
+    The attribute store will be the key to the future.
+</p>
+
+<p>
+    Based on the idea of attribute store, I draw the ER diagram of ER model, or Meta ER Model.
+    <img src="images/meta_er_model.png" class="img-responsive">
+</p>
+
+

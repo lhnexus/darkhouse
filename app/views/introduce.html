@@ -1,0 +1,73 @@
+<div>
+    <div class="h5_Title">
+        <h5>Welcome to DarkHouse. </h5>
+        <h5>It is a simple web application.</h5>
+        <h5>But the work behind scenes is not simple!</h5>
+        <h5>Here is the story:</h5>
+    </div>
+    <accordion close-others="oneAtATime">
+        <accordion-group is-open="status.open01" ng-click="introSlice01 = 'views/intro_01.html'">
+            <accordion-heading>
+                01. Compose a web application
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open01, 'glyphicon-chevron-right': !status.open01}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice01"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open02" ng-click="introSlice02 = 'views/intro_02.html'">
+            <accordion-heading>
+                02. Choose technologies and tools
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open02, 'glyphicon-chevron-right': !status.open02}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice02"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open03" ng-click="introSlice03 = 'views/intro_03.html'">
+            <accordion-heading>
+                03. First of all, user authentication
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open03, 'glyphicon-chevron-right': !status.open03}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice03"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open04" ng-click="introSlice04 = 'views/intro_04.html'">
+            <accordion-heading>
+                04. Universal data model
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open04, 'glyphicon-chevron-right': !status.open04}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice04"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open05" ng-click="introSlice05 = 'views/intro_05.html'">
+            <accordion-heading>
+                05. Security
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open05, 'glyphicon-chevron-right': !status.open05}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice05"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open06" ng-click="introSlice06 = 'views/intro_06.html'">
+            <accordion-heading>
+                06. UI really matters
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open06, 'glyphicon-chevron-right': !status.open06}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice06"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open07" ng-click="introSlice07 = 'views/intro_07.html'">
+            <accordion-heading>
+                07. Future Architecture
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open07, 'glyphicon-chevron-right': !status.open07}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice07"></div>
+        </accordion-group>
+
+        <accordion-group is-open="status.open08" ng-click="introSlice08 = 'views/intro_08.html'">
+            <accordion-heading>
+                08. References
+                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open08, 'glyphicon-chevron-right': !status.open08}"></i>
+            </accordion-heading>
+            <div ng-include src="introSlice08"></div>
+        </accordion-group>
+    </accordion>
+</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Darkhouse</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/"/>
+    <meta name="description" content="Darkhouse">
+    <meta name="author" content="VinceZK">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Custom styles for this page -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <!-- endbuild -->
+</head>
+<body ng-app="darkhouse" ng-controller="indexCtrl">
+    <!-- Add your site or application content here -->
+    <!--<div ng-include src="'views/navBar.html'" ng-show="navBar"></div>-->
+    <div ng-include src="navBarURL" ng-show="navBarURL"></div>
+    <!-- SHOW ERROR/SUCCESS MESSAGES -->
+    <div class="alerts-area">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+    <div ui-view autoscroll='true' class="anchor"></div>
+
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../bower_components/underscore/underscore-min.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="../bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="../bower_components/angular-http-auth/src/http-auth-interceptor.js"></script>
+    <script src="../scripts/angular/app.js"></script>
+    <script src="../scripts/angular/directives.js"></script>
+    <script src="../scripts/controllers/indexCtrl.js"></script>
+    <script src="../scripts/controllers/loginCtrl.js"></script>
+    <script src="../scripts/controllers/introduceCtrl.js"></script>
+    <script src="../scripts/services/authSer.js"></script>
+    <script src="../scripts/services/underscore.js"></script>
+</body>
+</html>

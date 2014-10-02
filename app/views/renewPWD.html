@@ -1,0 +1,24 @@
+<!-- Enter a password -->
+<!--<hr />-->
+
+<h4 class="form-signin-heading">
+    <span class="glyphicon glyphicon-lock"></span>
+    Change your password:
+</h4>
+
+<div id="password-group1" class="form-group"
+     ng-class="{'has-error' : loginForm.password1.$invalid && !loginForm.password1.$pristine }">
+    <input type="password" name="password1" class="form-control" placeholder="Enter a new password"
+           ng-model="formData.password1" ng-minlength="6" ng-maxlength="20" focus-me="focusPWD1">
+    <span class="help-block" ng-show="loginForm.password1.$error.minlength">Password is too short(Min 6 characters)!</span>
+    <span class="help-block" ng-show="loginForm.password1.$error.maxlength">Password is too short(Max 20 characters)!</span>
+</div>
+
+<!-- confirm the password -->
+<div id="password-group2" class="form-group"
+     ng-class="{ 'has-error' :  !(formData.password1 == formData.password2) && !loginForm.password2.$pristine}">
+    <input type="password" name="password2"  class="form-control" placeholder="Re-enter the password"
+           ng-model="formData.password2" required>
+    <span class="help-block" ng-show="!(formData.password1 == formData.password2) && !loginForm.password2.$pristine">
+        Password is not the same</span>
+</div>

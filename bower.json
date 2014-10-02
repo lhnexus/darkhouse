@@ -1,0 +1,16 @@
+{
+  "name": "darkhouse",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "~1.2.25",
+    "angular-route": "~1.2.25",
+    "bootstrap": "~3.2.0",
+    "angular-bootstrap": "~0.11.0",
+    "angular-ui-router": "~0.2.11",
+    "angular-cookies": "~1.2.24",
+    "angular-resource": "~1.2.25",
+    "angular-http-auth": "~1.2.1",
+    "underscore": "~1.7.0"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,100 @@
+<p>Almost every web application needs user authentication.</br>
+    Authentication is an absolutely essential element of a typical security model.
+    It is the process of confirming the identification of a user (or in some cases, a machine)
+    that is trying to log on or access resources. There are a number of different authentication mechanisms,
+    but all serve this same purpose.
+</p>
+
+<p>Like just now, you provide your email and password to enter 'Darkhouse'.
+    This authentication mechanism is so-called 'Form-based Authentication'.
+    Besides, there are 'Http Basic Authentication', 'Http Digest Authentication',
+    'Certificate Authentication', 'OpenID', 'OAuth', 'SSO', and so on.
+</p>
+<p>
+<b>If you are serious about 'Security', then you must have a solid understanding of authentication methods.</b>
+</p>
+<p>'Security' is the pandora box that I have opened.
+    Let's start from the 'Form-based Authentication'. I will describe the 'Darkhouse' authentication workflow
+    and figure out the difference between Singl-Page-Application and Normal-Website.
+</p>
+
+<h3>Single Page Application:</h3>
+<img src="images/auth_spa.png" class="img-responsive">
+<ol>
+    <li>Your email and password are sent to the server using RESTful API.</li>
+    <li>The server gets the email and password, compared them with the data stored in DB.</li>
+    <li>If the comparison is passed, the server create a session cookie
+        and return the user information to the client.</li>
+    <li>The client receives the JSON-style user information, and routes to the correct views.</li>
+</ol>
+
+<h3>Versus Normal Website:</h3>
+<img src="images/auth_normal.png" class="img-responsive">
+<ol>
+    <li>Your email and password are sent to the server using http-post.</li>
+    <li>The server gets the email and password, compared them with the data stored in DB.</li>
+    <li>If the comparison is passed, the server create a session cookie
+        and return the HTML page to the client.</li>
+    <li>The client receives and renders the HTML.</li>
+</ol>
+
+<p>The main difference is SPA composes the HTML page on client-side, while normal website is on the server-side.
+   So in SPA scenario, we do not base the security on URLs, but on REST Web Services. Almost all the HTML, CSS,
+    and JavaScript have already been downloaded to the client browser at first time. Continues client-server
+    communications are mainly on JSON-style messages. This feature makes SPA more like a native APP which
+    has a good torrance on bad network.
+</p>
+
+<p>In a typical web application, the credentials used to authenticate a user will only be transmitted
+    during the login request. If authentication succeeds, a session will be established and maintained
+    via a cookie set in the user's browser.
+    <pre>
+    <comment>Your current session cookie in your browser:</comment>
+    sessionID = {{sessionCookie}}
+   </pre>
+</p>
+
+<p>
+    <b>Please try to refresh this page</b>,
+    and you will find 'DarkHouse' do not want your credentials again. What happened
+    during the refresh?
+<ol>
+    <li>The 'sessionID' cookie is sent to the server.</li>
+    <li>The server gets the cookie and decrypt it. </li>
+    <li>The server using the decrypt key to found the corresponding user session stored in Node.js process memory.</li>
+    <li>If the session is valid, de-serialize the user session into full user information,
+        for example, search DB by the username to get other information.</li>
+    <li>The server return the full user information to the client.</li>
+    <li>The client receives the '200' status and the full user information.</li>
+    <li>The client continues the routes and operation.</li>
+</ol>
+
+    The session mechanism is complicate yet very necesailly. It is very difficult to
+    build the authentication and session framework all by yourself.
+    Instead, I found  2 existing frameworks that supports.
+    Even though, it took me 2 weeks to get through.
+    <li><a href="https://github.com/expressjs/session" target="_blank">'express-session'</a>
+        A http session framework build on expressjs.
+    </li>
+    <li><a href="http://passportjs.org/" target="_blank">'Passport'</a>
+        A authentication middleware for Node.js combined with express-session. </li>
+
+    'express-session' supports external session stores like 'Memcached'. In the above workflow, step 3, the session
+     information can be stored to 'Memcached' which allows more session information be stored in memory and be shared
+     with other Node.js processes(This is very important).
+</p>
+<p> It is easy to confuse authentication with authorization.
+    While authentication verifies the user’s identity,
+    authorization verifies that the user in question has the correct permissions and rights
+    to access the requested resource.
+    The two always work together. Authentication occurs first, then authorization.
+    <b>'DarkHouse' will utilize its authorization framework based on 'Memcached'.</b></p>
+
+<p>
+    The user authentication and authorization will be the corner stone of 'DarkHouse'.
+    Future APPs will either inherit or based on it. Besides lots of framework
+    and client-side developments, the data model needs to be confirmed first.
+    </br>
+    Chapter 04:<a ng-click="openAccordionGroup(4)">"Data model"</a> introduces a universal
+    data model for all objects.
+</p>
