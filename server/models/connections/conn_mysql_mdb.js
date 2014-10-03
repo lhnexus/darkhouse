@@ -4,9 +4,9 @@
 var async = require('async');
 var mysql = require('mysql');
 var pool = mysql.createPool({
-    host: '121.40.149.111',
-    user: 'root',
-    password: 'root',
+    host: 'localhost',
+    user: 'nodejs',
+    password: 'nodejs',
     database: 'MDB',
     port: 3306
 });
