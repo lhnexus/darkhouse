@@ -12,6 +12,7 @@ angular.module('darkhouse')
              * @returns {userJson|*}
              */
             function parseUserInfo(userInfo){
+                $rootScope.currentUserArray = userInfo;
                 var userJson = {
                     USER_ID: '',
                     USER_NAME: '',
@@ -96,6 +97,17 @@ angular.module('darkhouse')
                     )
                 },
 
+                renewPWD: function(user, success, error){
+                    $resource('/api/renewPWD').save(
+                        user,
+                        function (value) {
+                            success();
+                        },
+                        function (err){
+                            error(err);
+                        }
+                    )
+                },
                 /**
                  * Get current user:
                  * 1)Check whether current user's session is expired?
@@ -131,7 +143,16 @@ angular.module('darkhouse')
                     })
                 },
 
-                parseUserInfo: parseUserInfo
+                parseUserInfo: parseUserInfo,
+
+                userEntityMeta: function(callback){
+                    $resource('/api/getUserMeta').get(function(userMeta){
+                           callback(null,  userMeta);
+                        },
+                        function(err){
+                            callback(err);
+                        })
+                }
             }
         }])
 

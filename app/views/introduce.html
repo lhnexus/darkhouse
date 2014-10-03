@@ -30,7 +30,7 @@
             <div ng-include src="introSlice03"></div>
         </accordion-group>
 
-        <accordion-group is-open="status.open04" ng-click="introSlice04 = 'views/intro_04.html'">
+        <accordion-group is-open="status.open04" ng-click="introSlice04 = 'views/intro_04.html'; getUserMeta()">
             <accordion-heading>
                 04. Universal data model
                 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open04, 'glyphicon-chevron-right': !status.open04}"></i>

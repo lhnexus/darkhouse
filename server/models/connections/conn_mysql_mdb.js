@@ -35,15 +35,15 @@ module.exports = {
                 var entity = {
                     TENANT_DOMAIN: entityRow.TENANT_DOMAIN,
                     ENTITY_ID: entityRow.ENTITY_ID,
+                    ENTITY_NAME: entityRow.ENTITY_NAME,
                     ENTITY_DESC: entityRow.ENTITY_DESC,
-                    TYPE: entityRow.TYPE,
                     MARSHALL: entityRow.MARSHALL,
                     VERSION_NO: entityRow.VERSION_NO,
                     ATTRIBUTES: []
                 }
 
                 var selectSQL2 = "select * from attribute where TENANT_DOMAIN = "
-                    + pool.escape(tenant_domain) + " and er_id = "
+                    + pool.escape(tenant_domain) + " and RELATION_ID = "
                     + pool.escape(entityRow.ENTITY_ID);
                 pool.query(selectSQL2, function (err, attrRows) {
                     if (err)return callback(err, entityRow.ENTITY_ID);
@@ -51,14 +51,14 @@ module.exports = {
                         var attribute = {
                             ATTR_GUID: attrRows[i].ATTR_GUID,
                             TENANT_DOMAIN: attrRows[i].TENANT_DOMAIN,
-                            ER_ID: attrRows[i].ER_ID,
+                            RELATION_ID: attrRows[i].RELATION_ID,
                             ATTR_NAME: attrRows[i].ATTR_NAME,
                             DATA_TYPE: attrRows[i].DATA_TYPE,
                             DATA_LENGTH: attrRows[i].DATA_LENGTH,
                             SEARCHABLE: attrRows[i].SEARCHABLE,
                             NOT_NULL: attrRows[i].NOT_NULL,
                             UNIQUE: attrRows[i].UNIQUE,
-                            DEFAULT: attrRows[i].DEFAULT,
+                            DOMAIN_ID: attrRows[i].DOMAIN_ID,
                             FINALIZE: attrRows[i].FINALIZE
                         };
                         entity.ATTRIBUTES.push(attribute);

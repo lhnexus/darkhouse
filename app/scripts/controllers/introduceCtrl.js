@@ -4,8 +4,8 @@
 var introControllers = angular.module('introControllers',[]);
 
 // create angular controller and pass in $scope and $http
-introControllers.controller('introduceCtrl',['$scope', '$cookies',
-    function($scope,$cookies){
+introControllers.controller('introduceCtrl',['$scope', '$cookies', 'auth', '$rootScope','$state',
+    function($scope,$cookies,auth,$rootScope,$state){
         $scope.introSlice01 = 'views/intro_01.html';
         $scope.oneAtATime = true;
         //$scope.sessionCookie = $cookieStore.get('sessionID');
@@ -22,6 +22,25 @@ introControllers.controller('introduceCtrl',['$scope', '$cookies',
             open09: false
         };
 
+        function getUserMeta(){
+            if(!$scope.userEntityMeta)
+                auth.userEntityMeta(function(err, userMeta){
+                    if(err){
+                        $rootScope.currentError =
+                        {
+                            errorName : err.statusText,
+                            errorStatus: err.status,
+                            errorStack: err.message
+                        }
+                        $state.go('error');
+                    };
+
+                    $scope.userEntityMeta = userMeta;
+                })
+        };
+
+        $scope.getUserMeta = getUserMeta;
+
         $scope.openAccordionGroup = function(index){
             switch (index){
                 case 1:
@@ -37,7 +56,8 @@ introControllers.controller('introduceCtrl',['$scope', '$cookies',
                     $scope.introSlice03 = 'views/intro_03.html';
                     break;
                 case 4:
-                    $scope.status.open04 = true ;
+                    getUserMeta();
+                    $scope.status.open04 = true;
                     $scope.introSlice04 = 'views/intro_04.html';
                     break;
                 case 5:

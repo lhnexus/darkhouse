@@ -17,43 +17,77 @@ loginCtrl.controller('loginCtrl',['$scope','$rootScope','$state','auth',
         password2 : ''
     };
 
-    // process the form
-    $scope.processLogin = function() {
-        auth.login_resource({
-            username: $scope.formData.email,
-            password: $scope.formData.password
-        },
-        function(data){
-          $scope.errorEmail = data.otherInfo.errorEmail;
-          $scope.errorPassword = data.otherInfo.errorPassword;
-          if(data.otherInfo.message == 'renewPWD'){
-              $scope.SignIn = 'Save & Sign In';
-              $scope.focusPWD1 = true;
-              $state.go('login.renewPWD');
-              return;
-          }
-
-          if(!data.userInfo){
-              $scope.errorPassword = data.errorInfo;
-              return;
-          }
-
-          $rootScope.currentUser = auth.parseUserInfo(data.userInfo);
-          $rootScope.alerts.splice(0,$rootScope.alerts.length);
-          $rootScope.navBarURL = 'views/navBar.html';
-          $state.go('introduce');
-
-
-        },
-        function (err) {
-          $rootScope.currentError =
-              {
-                  errorName : err.statusText,
-                  errorStatus: err.status,
-                  errorStack: err.message
-              }
-          $state.go('error');
+    /**
+     * Validate the form data
+     */
+    $scope.validateFormData = function(){
+        if($scope.formData.password1 != $scope.formData.password2 ||
+            $scope.formData.password1 == $scope.formData.password){
+            return false;
         }
-        )
+        else{
+            return true;
+        }
+    }
+
+    /**
+     * submit the loginform
+     */
+    $scope.processLogin = function() {
+        if($scope.SignIn === 'Sign In'){
+            auth.login_resource({
+                    username: $scope.formData.email,
+                    password: $scope.formData.password
+                },
+                function(data){
+                    $scope.errorEmail = data.otherInfo.errorEmail;
+                    $scope.errorPassword = data.otherInfo.errorPassword;
+                    if(!data.userInfo){
+                        $scope.errorPassword = data.errorInfo;
+                        return;
+                    }
+
+                    $rootScope.currentUser = auth.parseUserInfo(data.userInfo);
+                    $rootScope.alerts.splice(0,$rootScope.alerts.length);
+                    if(data.otherInfo.message == 'renewPWD'){
+                        $scope.SignIn = 'Save & Sign In';
+                        $scope.focusPWD1 = true;
+                        $state.go('login.renewPWD');
+                    }else{
+                        $rootScope.navBarURL = 'views/navBar.html';
+                        $state.go('introduce');
+                    }
+                },
+                function (err) {
+                    $rootScope.currentError =
+                    {
+                        errorName : err.statusText,
+                        errorStatus: err.status,
+                        errorStack: err.message
+                    }
+                    $state.go('error');
+                }
+            )
+        }else{
+            auth.renewPWD({
+                    email: $scope.formData.email,
+                    password: $scope.formData.password1
+                },
+                function(){
+                    $scope.SignIn = 'Sign In';
+                    $scope.focusPWD1 = false;
+                    $rootScope.navBarURL = 'views/navBar.html';
+                    $state.go('introduce');
+                },
+                function(err){
+                    $rootScope.currentError =
+                    {
+                        errorName : err.data,
+                        errorStatus: err.status,
+                        errorStack: err.message
+                    }
+                    $state.go('error');
+                })
+        }
     }
 }]);

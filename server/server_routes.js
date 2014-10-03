@@ -16,6 +16,9 @@ router.post('/api/login',Auth.login);
 router.get('/api/login',Auth.ensureAuthenticated,Auth.session);
 router.delete('/api/login',Auth.logout);
 
+router.post('/api/renewPWD',Auth.ensureAuthenticated,Auth.renewPWD);
+router.get('/api/getUserMeta',Auth.ensureAuthenticated,Auth.getUserMeta);
+
 // angular启动页
 //router.use('/app/*', Auth.ensureAuthenticated);
 

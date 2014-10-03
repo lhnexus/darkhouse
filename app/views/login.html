@@ -28,7 +28,7 @@
             <input type="checkbox" value="remember-me" ng-model="formData.rememberme"> Remember me
         </label>-->
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ SignIn }}</button>
+        <button class="btn btn-lg btn-primary btn-block" ng-disabled="loginForm.$invalid || !validateFormData()" type="submit">{{ SignIn }}</button>
     </form>
 
 </div>

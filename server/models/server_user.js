@@ -122,6 +122,68 @@ module.exports = {
 
             callback(null,  userAttributes);
         })
+    },
+
+    /**
+     * Get the meta data of user entity
+     */
+    getUserEntityMeta:function(){
+        return userEntity;
+    },
+
+    /**
+     * Renew the password. update PASSWORD & PWD_STATE at same time.
+     * Currently, DB transaction is not implemented. Using async.parallel
+     * is a workaround solution. There are 2 options:
+     * 1) Using nodejs mysql lib's transaction api,
+     * 2) Write mysql store procedures.
+     * @param email
+     * @param newPWD
+     * @param callback
+     */
+    changePWD: function(email, newPWD, callback){
+        var attrEmail = _.find(userEntity.ATTRIBUTES, function (attribute) {
+            return attribute.ATTR_NAME === 'EMAIL';
+        });
+        var attrPWD = _.find(userEntity.ATTRIBUTES, function (attribute) {
+            return attribute.ATTR_NAME === 'PASSWORD';
+        });
+        var attrPWD_STATE = _.find(userEntity.ATTRIBUTES, function (attribute) {
+            return attribute.ATTR_NAME === 'PWD_STATE';
+        });
+        var updateSQL1 = "UPDATE VALUE set VALUE0 = " + entityDB.pool.escape(newPWD)
+            + " WHERE REC_GUID = (select REC_GUID from UIX_"+ attrEmail.ATTR_GUID
+            + " WHERE VALUE0 = " + entityDB.pool.escape(email) + ")"
+            + " AND ATTR_GUID = " + entityDB.pool.escape(attrPWD.ATTR_GUID);
+
+        var updateSQL2 = "UPDATE VALUE set VALUE0 = 1"
+            + " WHERE REC_GUID = (select REC_GUID from UIX_"+ attrEmail.ATTR_GUID
+            + " WHERE VALUE0 = " + entityDB.pool.escape(email) + ")"
+            + " AND ATTR_GUID = " + entityDB.pool.escape(attrPWD_STATE.ATTR_GUID);
+
+        async.parallel([
+            function(callback){
+                entityDB.executeSQL(updateSQL1,function(err, rows){
+                    if(err){
+                        callback(err,1);
+                    }else{
+                        callback(null,1);
+                    }
+                })
+            },
+            function(callback){
+                entityDB.executeSQL(updateSQL2,function(err, rows){
+                    if(err){
+                        callback(err, 2);
+                    }else{
+                        callback(null,2);
+                    }
+                })
+            }],
+            function (err, results) {
+                callback(err, results);
+            })
+
     }
 };
 

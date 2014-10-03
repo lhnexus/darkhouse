@@ -9,7 +9,7 @@ tenancy can still customize it based on its own requirements and the data is iso
 
 <p><b>Why a key-value DB is running on RDS?</b><br>
     If you have deep dived into the database technology,you will find the fact that
-    all kinds of DB is key-value DB. Either column-store or row-store is key-value store in
+    all kinds of DB are key-value DB. Either column-store or row-store is key-value store in
     fundamental. Document store and object store are of course key-value stores. The only difference
     among them is how to define the "value" in "key-value" pairs. For example:
     <li>If you define the "value" a row of a table data, then it is row-store,</li>
@@ -23,10 +23,10 @@ tenancy can still customize it based on its own requirements and the data is iso
 <b>MDB defines the "value" to the value of each attribute</b>
 
 <p>The general idea is to break down a "row" into "attributes".
-    Let's first review some basic concepts of Entity-Relation model(copied from P.P.S. Chen).
+    Let's first review some basic concepts of Entity-Relationship model(copied from P.P.S. Chen).
 
     <li>An entity is a "thing" which can be distinctly identified. A specific person, company or event is an
-    is an example of an entity.</li>
+    example of an entity.</li>
     <li>A relationship is an association among entities. For instance, "father-son" is a relationship between
     two "person" entities.</li>
     <li>The role of an entity in a relationship is the function that it performs in the relationship. "Husband"
@@ -42,26 +42,293 @@ tenancy can still customize it based on its own requirements and the data is iso
 
 <p>
   The essential ER model didn't say anything about how to store and format data. But why most of the DB systems store values
-     as close as possible? The reasons I think are:
+     as close as possible? The reasons(I think) are:
     <li>People feel comfortable with table format views of data.</li>
-    <li>OLTP Performance: values of an entity store together(row-store) makes it easy to read and update;</li>
-    <li>OLAP Performance: values of an attribute store together(column-store) makes it easy to do aggregation and analysis;</li>
+    <li>OLTP Performance: storing values of an entity together(row-store) makes it easy to read and update;</li>
+    <li>OLAP Performance: storing values of an attribute together(column-store) makes it easy to do aggregation and analysis;</li>
     <li>The data size is not such large that putting affinity values together will solve most of the issues.</li>
 </p>
 
 <b>Now it's time to change!</b>
 <p>Applications nowadays are not designed to a small group of people, but to the people all over the world.
     They will generate huge size of data everyday. They should provide high flexibility, and support somehow "Out-Of-Control".
-   Scheme-less document stores have already been proven their ability in big data processing. But the world is built
-    on schemes. A man is composed by cells, a cell is composed by molecules, a molecule is composed by atoms,
-    a atom is composed by subatomoic particles...... Physicists try their best to find the ultimate scheme of everything.
+   schema-less Document-Oriented Stores have already been proved their ability in big data processing. But the world is built
+    on schemas. A man is composed by cells, a cell is composed by molecules, a molecule is composed by atoms,
+    a atom is composed by subatomoic particles...... Physicists try their best to find the ultimate schema of everything.
     We therefore should gain the ability to deal with massive smaller units of information.
-    The attribute store will be the key to the future.
+    The Attribute-Oriented Store should be the key to the future.
 </p>
 
 <p>
-    Based on the idea of attribute store, I draw the ER diagram of ER model, or Meta ER Model.
+    Based on the idea of Attribute-Oriented, I draw the ER diagram of ER model, or the Meta ER Model.
     <img src="images/meta_er_model.png" class="img-responsive">
+    The above diagram describes the relationships between the 5 essential entities of ER model:<br>
+    <b>Entity, Relationship, Role, Attribute, and Value Set.</b> The Attribute entity is on top of the triangle.
+    <br>Therefore, database schema can be designed like this:
 </p>
 
+<div class="row">
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">ENTITY</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>ENTITY_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ENTITY_NAME</td><td>VARCHAR(45)</td></tr>
+            <tr><td>ENTITY_DESC</td><td>VARCHAR(256)</td></tr>
+            <tr><td>MARSHALL</td><td>TINYINT(1)</td></tr>
+            <tr><td>VERSION_NO</td><td>INT(11)</td></tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">ENTITY_INSTANCES</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>ENTITY_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>REC_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>DEL</td><td>TINYINT(1)</td></tr>
+            <tr><td>CHANGE_NO</td><td>INT(11)</td></tr>
+        </table>
+    </div>
 
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">ENTITY_ROLES</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>ENTITY_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ROLE_ID</td><td>VARCHAR(45)</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">RELATIONSHIP</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>RELATIONSHIP_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>NAME</td><td>VARCHAR(45)</td></tr>
+            <tr><td>NUM_ENTITY</td><td>INT(11)</td></tr>
+            <tr><td>VALID_PERIOD</td><td>INT(11)</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">RELATIONSHIP_INVOLVES</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>RELATIONSHIP_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>INVOLVES_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>CARDINALITY</td><td>TINYINT(4)</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">RELATIONSHIP_INSTANCES</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>RELATIONSHIP_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ENTITY1_REC_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ENTITY2_REC_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>VALID_FROM</td><td>DATETIME</td></tr>
+            <tr><td>VALID_TO</td><td>DATETIME</td></tr>
+            <tr><td>REC_GUID</td><td>VARCHAR(32)</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">ATTRIBUTE</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>ATTR_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>RELATION_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ATTR_NAME</td><td>VARCHAR(45)</td></tr>
+            <tr><td>DATA_TYPE</td><td>INT(4)</td></tr>
+            <tr><td>DATA_LENGTH</td><td>INT(4)</td></tr>
+            <tr><td>SEARCHABLE</td><td>TINYINT(1)</td></tr>
+            <tr><td>NOT_NULL</td><td>TINYINT(1)</td></tr>
+            <tr><td>UNIQUE</td><td>TINYINT(1)</td></tr>
+            <tr><td>FINALIZE</td><td>TINYINT(1)</td></tr>
+            <tr><td>DOMAIN_ID</td><td>VARCHAR(32)</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">VALUE</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>REC_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ATTR_GUID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>VALUE0</td><td>VARCHAR(128)</td></tr>
+            <tr><td>VALUE1</td><td>VARCHAR(128)</td></tr>
+            <tr><td>VALUE2</td><td>VARCHAR(128)</td></tr>
+            <tr><td>VALUE3</td><td>VARCHAR(128)</td></tr>
+            <tr><td>BLOG0</td><td>BLOG</td></tr>
+            <tr><td>BLOG1</td><td>BLOG</td></tr>
+            <tr><td>VERSION_NO</td><td>INT(11)</td></tr>
+            <tr><td>CHANGE_NO</td><td>INT(11)</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">VALUE_SET</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>DOMAIN_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>DOMAIN_NAME</td><td>VARCHAR(45)</td></tr>
+            <tr><td>DOMAIN_DESC</td><td>VARCHAR(128)</td></tr>
+            <tr><td>DATA_TYPE</td><td>INT(4)</td></tr>
+            <tr><td>DATA_LENGTH</td><td>INT(4)</td></tr>
+            <tr><td>DEFAULT</td><td>VARCHAR(256)</td></tr>
+            <tr><td>DATA_VALIDATION</td><td>VARCHAR(256)</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">ROLE</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>ROLE_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>ROLE_DESC</td><td>VARCHAR(256)</td></tr>
+            <tr><td>VERSION_NO</td><td>INT(11)</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">TENANTS</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>TENANT_URL</td><td>VARCHAR(256)</td></tr>
+            <tr><td>SHORT_NAME</td><td>VARCHAR(45)</td></tr>
+            <tr><td>DESC</td><td>VARCHAR(256)</td></tr>
+            <tr><td>STATUS</td><td>SMALLINT(6)</td></tr>
+            <tr><td>CREATE_TIME</td><td>DATETIME</td></tr>
+            <tr><td>LANGUAGE</td><td>VARCHAR(5)</td></tr>
+            <tr><td>VALID_FROM</td><td>DATETIME</td></tr>
+            <tr><td>VALID_TO</td><td>DATETIME</td></tr>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <table class="table">
+            <caption class="Table_Caption">CHANGE_LOG</caption>
+            <tr><th>Attribute</th><th>Data Type</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>VARCHAR(63)</td></tr>
+            <tr><td>OBJECT_ID</td><td>VARCHAR(32)</td></tr>
+            <tr><td>CHANGE_NO</td><td>INT(11)</td></tr>
+            <tr><td>TYPE</td><td>VARCHAR(45)</td></tr>
+            <tr><td>CHANGE_TIME</td><td>DATETIME</td></tr>
+            <tr><td>CHANGE_USER</td><td>VARCHAR(45)</td></tr>
+            <tr><td>AUDIT_MEMO</td><td>BLOB</td></tr>
+        </table>
+    </div>
+</div>
+
+<p>We say 'ENTITY' usually stands for 'ENTITY SET'. For example, John is an employee. So John is an entity instance
+that belongs to entity set EMPLOYEE. The table 'ENTITY' stores entity sets which classifies entities that have common
+attributes. While 'ENTITY_INSTANCES' stores an actual entity instance (The same as 'RELATIONSHIP_INSTANCE').
+This is very similar to Object-Oriented programing. 'ENTITY SET' is a kind of 'CLASS', and can have super classes and
+    children classes that inherit.
+</p>
+
+<p>You can regard a 'ROLE' as a set of reusable attributes. ROLE can be assigned to multiple entities, thus the entities
+    will have the attributes. ROLEs can performs 'RELATIONSHIP', through table 'RELATIONSHIP_INVOLVES', ROLE brings the
+    relationship to entity. Mapping to OO programming, ROLE is a kind of 'INTERFACE'.
+</p>
+
+<p>'ATTRIBUTE' is assigned to 'ENTITY', 'RELATIONSHIP', and 'ROLE' through the 'RELATION_ID'. The attributes of an ATTRIBUTE
+    defines the meta data which controls the execution of attribute 'get' and 'set' functions. 'VALUE_SET' can be assigned to
+    ATTRIBUTE through 'DOMAIN_ID' which will bring 'DATA_TYPE', 'DATA_LENGTH', and 'DATA_VALIDATION' to ATTRIBUTE.
+</p>
+
+<p>'VALUE' stores the attribute values that belong to an entity instance or relationship instance. Each attribute name and value pair
+    forms a key-value pair in the DB storage system.This is the core idea of Attribute-Oriented: attribute name and value pairs
+    are the "atom" that forms the entire model.
+</p>
+
+<p>
+    'TENANTS' describe the attributes of a tenant.
+    'CHANGE_LOG' records every changes to an ENTITY or RELATIONSHIP.
+</p>
+<b>The 'user' Entity of DarkHouse</b>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <caption class="Table_Caption">The User Entity</caption>
+            <tr><th>Attribute Name</th><th>Value</th></tr>
+            <tr><td>TENANT_DOMAIN</td><td>{{userEntityMeta.TENANT_DOMAIN}}</td></tr>
+            <tr><td>ENTITY_ID</td><td>{{userEntityMeta.ENTITY_ID}}</td></tr>
+            <tr><td>ENTITY_NAME</td><td>{{userEntityMeta.ENTITY_NAME}}</td></tr>
+            <tr><td>ENTITY_DESC</td><td>{{userEntityMeta.ENTITY_DESC}}</td></tr>
+            <tr><td>MARSHALL</td><td>{{userEntityMeta.MARSHALL}}</td></tr>
+            <tr><td>VERSION_NO</td><td>{{userEntityMeta.VERSION_NO}}</td></tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <caption class="Table_Caption">Your Current Data</caption>
+            <tr><th>Attribute Name</th><th>Value</th></tr>
+            <tr ng-repeat="attrPair in currentUserArray">
+                <td>{{attrPair.attr_name}}</td>
+                <td>{{attrPair.attr_value}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="row visible-lg-block">
+<div class="col-md-12">
+    <table class="table">
+        <caption class="Table_Caption">Attributes of User Entity</caption>
+        <tr>
+            <!--<th>ATTR_GUID</th>-->
+            <th>TENANT_DOMAIN</th>
+            <th>RELATION_ID</th>
+            <th>ATTR_NAME</th>
+            <th>DATA_TYPE</th>
+            <th>DATA_LENGTH</th>
+            <th>SEARCHABLE</th>
+            <th>NOT_NULL</th>
+            <th>UNIQUE</th>
+            <th>DOMAIN_ID</th>
+            <th>FINALIZE</th>
+        </tr>
+
+        <tr ng-repeat="attribute in userEntityMeta.ATTRIBUTES">
+            <!--<td>{{attribute.ATTR_GUID}}</td>-->
+            <td>{{attribute.TENANT_DOMAIN}}</td>
+            <td>{{attribute.RELATION_ID}}</td>
+            <td>{{attribute.ATTR_NAME}}</td>
+            <td>{{attribute.DATA_TYPE}}</td>
+            <td>{{attribute.DATA_LENGTH}}</td>
+            <td>{{attribute.SEARCHABLE}}</td>
+            <td>{{attribute.NOT_NULL}}</td>
+            <td>{{attribute.UNIQUE}}</td>
+            <td>{{attribute.DOMAIN_ID}}</td>
+            <td>{{attribute.FINALIZE}}</td>
+        </tr>
+    </table>
+</div>
+</div>
+<p>The above 12 tables are the main tables that forms DarkHouse's data model.
+    The attribute-oriented idea makes MDB add or remove entities, relationships, and attributes much easier
+    than any other DB storage types. Good performance can be achieved through
+    technologies like: "partition","sharding", and "index tables".
+    Besides, there are other tables like UI configuration tables, version management tables,
+    value option tables, index tables, and OO feature tables. <br>
+    There is just too much to tell about database and data model technology, but I must finish this chapter now.
+    Let's go to next chapter 05: <a ng-click="openAccordionGroup(5)">"Security"</a>.
+</p>

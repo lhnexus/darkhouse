@@ -37,6 +37,16 @@ module.exports = {
         })(req, res, next);
     },
 
+    renewPWD:function(req, res){
+       user.changePWD(req.body.email, req.body.password, function(err){
+           if(err){
+               res.send(538, 'Server Error!');
+           }else{
+               res.send(200);
+           }
+       })
+    },
+
     logout: function(req, res){
         if(req.user){
             req.logout();
@@ -134,6 +144,10 @@ module.exports = {
         else{
             res.send(200);
         }
+    },
+
+    getUserMeta:function(req, res){
+        res.json(user.getUserEntityMeta());
     }
 
 }

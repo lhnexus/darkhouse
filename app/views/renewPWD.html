@@ -7,11 +7,12 @@
 </h4>
 
 <div id="password-group1" class="form-group"
-     ng-class="{'has-error' : loginForm.password1.$invalid && !loginForm.password1.$pristine }">
+     ng-class="{'has-error' : ((formData.password1 == formData.password) || loginForm.password1.$invalid) && !loginForm.password1.$pristine }">
     <input type="password" name="password1" class="form-control" placeholder="Enter a new password"
            ng-model="formData.password1" ng-minlength="6" ng-maxlength="20" focus-me="focusPWD1">
     <span class="help-block" ng-show="loginForm.password1.$error.minlength">Password is too short(Min 6 characters)!</span>
     <span class="help-block" ng-show="loginForm.password1.$error.maxlength">Password is too short(Max 20 characters)!</span>
+    <span class="help-block" ng-show="(formData.password1 == formData.password)">Password is the same with the old!</span>
 </div>
 
 <!-- confirm the password -->

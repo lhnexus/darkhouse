@@ -27,11 +27,17 @@ angular.module('darkhouse', [
         .state('login', {
             url: '/login',
             templateUrl: '/views/login.html',
-            controller: 'loginCtrl'
+            controller: 'loginCtrl',
+            onEnter:function($rootScope){
+                $rootScope.navBarURL = null;
+            }
         })
         .state('login.renewPWD', {
-            url: '/login/renewPWD',
-            templateUrl: '/views/renewPWD.html'
+            url: '/renewPWD',
+            templateUrl: '/views/renewPWD.html',
+            onEnter:function($rootScope){
+                $rootScope.navBarURL = null;
+            }
         })
         .state('welcome', {
             url: '/app/welcome',
@@ -43,20 +49,6 @@ angular.module('darkhouse', [
             templateUrl: '/views/introduce.html',
             controller: 'introduceCtrl'
         })
-//        .state('introduce.intro-01',{
-//            url: '/intro-01',
-//            views:{
-//                "intro-01" :{templateUrl: '/views/intro_01.html',
-//                             controller: 'introSliceCtrl'}
-//            }
-//        })
-//        .state('introduce.intro-02',{
-//            url: '/intro-02',
-//            views:{
-//                "intro-02" :{templateUrl: '/views/intro_02.html',
-//                             controller: 'introSliceCtrl'}
-//            }
-//        })
         .state('error',{
             url: '/error',
             templateUrl: '/views/app_error.html'
