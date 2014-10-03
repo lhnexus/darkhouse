@@ -10,6 +10,13 @@ var pool = mysql.createPool({
     database: 'MDB',
     port: 3306
 });
+//var pool = mysql.createPool({
+//    host: '121.40.149.111',
+//    user: 'root',
+//    password: 'root',
+//    database: 'MDB',
+//    port: 3306
+//});
 var tenant_domain = '';
 var entities = [];
 
@@ -41,7 +48,7 @@ module.exports = {
                     ATTRIBUTES: []
                 }
 
-                var selectSQL2 = "select * from ATTRIBUTES where TENANT_DOMAIN = "
+                var selectSQL2 = "select * from ATTRIBUTE where TENANT_DOMAIN = "
                     + pool.escape(tenant_domain) + " and RELATION_ID = "
                     + pool.escape(entityRow.ENTITY_ID);
                 pool.query(selectSQL2, function (err, attrRows) {
