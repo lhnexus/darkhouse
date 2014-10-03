@@ -4,9 +4,9 @@
 var async = require('async');
 var mysql = require('mysql');
 var pool = mysql.createPool({
-    host: 'localhost',
-    user: 'nodejs',
-    password: 'nodejs',
+    host: '121.40.149.111',
+    user: 'root',
+    password: 'root',
     database: 'MDB',
     port: 3306
 });
@@ -27,9 +27,8 @@ module.exports = {
     },
 
     loadEntities: function(waitForFinish) {
-        var selectSQL1 = "select * from entity where TENANT_DOMAIN = "
+        var selectSQL1 = "select * from ENTITY where TENANT_DOMAIN = "
             + pool.escape(tenant_domain);
-
         pool.query(selectSQL1, function (err, entityRows) {
             async.map(entityRows, function (entityRow, callback) {
                 var entity = {
@@ -42,7 +41,7 @@ module.exports = {
                     ATTRIBUTES: []
                 }
 
-                var selectSQL2 = "select * from attribute where TENANT_DOMAIN = "
+                var selectSQL2 = "select * from ATTRIBUTES where TENANT_DOMAIN = "
                     + pool.escape(tenant_domain) + " and RELATION_ID = "
                     + pool.escape(entityRow.ENTITY_ID);
                 pool.query(selectSQL2, function (err, attrRows) {
