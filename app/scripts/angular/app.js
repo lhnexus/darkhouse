@@ -19,9 +19,9 @@ angular.module('darkhouse', [
         function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
     $urlRouterProvider
-        .when('app/welcome', 'welcome')
+        .when('app/introduce', 'introduce')
         .when('login', 'login')
-        .otherwise('/app/introduce');
+        .otherwise('login');
 
     $stateProvider
         .state('login', {
