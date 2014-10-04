@@ -47,7 +47,10 @@ angular.module('darkhouse', [
         .state('introduce',{
             url: '/app/introduce',
             templateUrl: '/views/introduce.html',
-            controller: 'introduceCtrl'
+            controller: 'introduceCtrl',
+            onEnter:function($rootScope){
+                $rootScope.navBarURL = 'views/navBar.html';
+            }
         })
         .state('error',{
             url: '/error',
