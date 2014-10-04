@@ -11,7 +11,7 @@ loginCtrl.controller('loginCtrl',['$scope','$rootScope','$state','auth',
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
     $scope.formData = {
-        email : 'zklee@hotmail.com',
+        email : '',
         password : '',
         password1 : '',
         password2 : ''

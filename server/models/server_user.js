@@ -104,7 +104,7 @@ module.exports = {
             + "ON A.REC_GUID = B.REC_GUID "
             + "RIGHT JOIN MDB.ATTRIBUTE AS C "
             + "ON A.ATTR_GUID = C.ATTR_GUID "
-            + "WHERE B.VALUE0 = " + entityDB.pool.escape(email);
+            + "WHERE B.VALUE0 = " + entityDB.pool.escape(email.toLowerCase());
 
         var userAttributes = [];
 
@@ -153,12 +153,12 @@ module.exports = {
         });
         var updateSQL1 = "UPDATE VALUE set VALUE0 = " + entityDB.pool.escape(newPWD)
             + " WHERE REC_GUID = (select REC_GUID from UIX_"+ attrEmail.ATTR_GUID
-            + " WHERE VALUE0 = " + entityDB.pool.escape(email) + ")"
+            + " WHERE VALUE0 = " + entityDB.pool.escape(email.toLowerCase()) + ")"
             + " AND ATTR_GUID = " + entityDB.pool.escape(attrPWD.ATTR_GUID);
 
         var updateSQL2 = "UPDATE VALUE set VALUE0 = 1"
             + " WHERE REC_GUID = (select REC_GUID from UIX_"+ attrEmail.ATTR_GUID
-            + " WHERE VALUE0 = " + entityDB.pool.escape(email) + ")"
+            + " WHERE VALUE0 = " + entityDB.pool.escape(email.toLowerCase()) + ")"
             + " AND ATTR_GUID = " + entityDB.pool.escape(attrPWD_STATE.ATTR_GUID);
 
         async.parallel([
