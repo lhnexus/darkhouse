@@ -12,6 +12,7 @@ angular.module('darkhouse')
              * @returns {userJson|*}
              */
             function parseUserInfo(userInfo){
+                if(userInfo.length == 0)return;
                 $rootScope.currentUserArray = userInfo;
                 var userJson = {
                     USER_ID: '',
@@ -74,7 +75,7 @@ angular.module('darkhouse')
                     $http.post('/api/login', user)
                         .success(function(user){
                             success(user);
-                            authService.loginConfirmed();
+                            //authService.loginConfirmed();
                         }).error(error);
                 },
 
@@ -89,7 +90,7 @@ angular.module('darkhouse')
                         user,
                         function (value) {
                             success(value);
-                            authService.loginConfirmed();
+                            //authService.loginConfirmed();
                         },
                         function (err){
                             error(err);
@@ -115,7 +116,7 @@ angular.module('darkhouse')
                  */
                 currentUser: function(callback){
                     $resource('/api/login').get(function(user){
-                        if(user.userInfo.length == 0){
+                        if(!user.userInfo || user.userInfo.length == 0){
                             callback({
                                 message: 'User information is NULL!'
                             });
