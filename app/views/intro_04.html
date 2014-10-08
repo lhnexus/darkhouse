@@ -17,7 +17,7 @@ tenancy can still customize it based on its own requirements and the data is iso
     <li>And same with other types......</li>
 
     So you can, of course using any kinds of DB to realize key-value style data model.
-    And RDS is the best choice for its muturity and stabilitiy.
+    And RDS(SQLDB) is the best choice for its muturity and ACID supports.
 </p>
 
 <b>MDB defines the "value" to the value of each attribute</b>
@@ -327,6 +327,9 @@ This is very similar to Object-Oriented programing. 'ENTITY SET' is a kind of 'C
     The attribute-oriented idea makes MDB add or remove entities, relationships, and attributes much easier
     than any other DB storage types. Good performance can be achieved through
     technologies like: "partition","sharding", and "index tables".
+    There is an interesting BLOG by the "Father of RDBMS"-- Michael Stonebrake,
+    who claims <a href="docs/Stonebraker-SQL-vs-NoSQL-2010.pdf" target="_blank">"The NoSQL (performance) Discussion has Nothing to Do With SQL"</a>>.
+    The BLOG supports my opinion.
     Besides, there are other tables like UI configuration tables, version management tables,
     value option tables, index tables, and OO feature tables. <br>
     There is just too much to tell about database and data model technology, but I must finish this chapter now.

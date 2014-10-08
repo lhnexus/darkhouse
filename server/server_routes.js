@@ -19,8 +19,12 @@ router.delete('/api/login',Auth.logout);
 router.post('/api/renewPWD',Auth.ensureAuthenticated,Auth.renewPWD);
 router.get('/api/getUserMeta',Auth.ensureAuthenticated,Auth.getUserMeta);
 
+//router.get('/app/views/*',Auth.ensureAuthenticated);
+
 // angular启动页
-//router.use('/app/*', Auth.ensureAuthenticated);
+router.use('/blog*', function(req, res){
+    res.render('blog');
+});
 
 router.use('/*', function(req, res){
     res.render('index');

@@ -3,26 +3,33 @@ body {
     padding-bottom: 30px;
     background-color: #eee;
 }
-hr { width:100%;
-     height:1px;
+
+hr {
+    width: 100%;
+    height: 1px;
     background: #fff
 }
+
 .form-signin {
     max-width: 330px;
     padding: 15px;
     margin: 0 auto;
 }
-.form-signin .form-signin-heading{
+
+.form-signin .form-signin-heading {
     margin-bottom: 10px;
 }
-.form-signin .message-area{
+
+.form-signin .message-area {
     margin-bottom: 10px;
 }
+
 .form-signin .checkbox {
     margin-bottom: 10px;
     font-weight: normal;
     padding-left: 20px;
 }
+
 .form-signin .form-control {
     position: relative;
     height: auto;
@@ -32,42 +39,77 @@ hr { width:100%;
     padding: 10px;
     font-size: 16px;
 }
+
 .form-signin .form-control:focus {
     z-index: 2;
 }
+
 .form-signin input[type="email"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
+
 .form-signin input[type="password"] {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
 .navbar-brand {
     height: 30px;
+    padding: 13px 15px;
 }
+
 .navbar-default .navbar-brand {
-    color:#160202;
+    color: #160202;
 }
-.navbar-toggle{
+
+.navbar-toggle {
     padding: 6px 10px;
 }
-.nav>li>a{
+.navbar-collapse.collapse {
+    padding-top: 5px;
+}
+
+.nav > li > a {
     padding: 10px 30px;
 }
-.alerts-area{
+.blog-body {
+    background-color: #fff;
+}
+.blog-nav{
+    -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+    box-shadow: 0 3px 3px rgba(0,0,0,0.175);
+}
+.blog-nav-button {
+    margin-left: 15px;
+    padding: 8px 10px;
+}
+.blog-nav-brand {
+    margin-left: auto;
+    margin-right: auto;
+}
+.blog-nav-brick {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.alerts-area {
     padding: 0px 15px 0px 15px;
 }
-.h5_Title{
+
+.h5_Title {
     margin-left: 15px;
 }
+
 .anchor {
     padding-top: 60px;
     margin-top: -60px;
 }
-.Table_Caption{
+
+.Table_Caption {
     font-size: 16px;
-    font-weight:bold;
+    font-weight: bold;
 }
+
+

@@ -1,0 +1,7 @@
+<div class="list-group" ng-class="listContainerClass">
+    <!--<p>{{screenWidth}}</p>-->
+    <a class="list-group-item" ng-repeat="blog in blog_list" ng-click="navToBlogID(blog.id)">
+        <h4 class="list-group-item-heading">{{blog.title}}</h4>
+        <p class="list-group-item-text">{{blog.abstract}}</p>
+    </a>
+</div>

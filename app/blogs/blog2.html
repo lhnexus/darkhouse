@@ -1,0 +1,104 @@
+<p>"Make a choice" is difficult, especially there are lots of web technologies, like: PHP, Ruby, JAVA, JavaScript, ASP, and so on.
+    You are just blind since each seems good, and each needs time to handle.</p>
+
+<p>I present you <a href="http://www.nodejs.org/" target="_blank">'Node.js'</a>.
+    for the following 3 reasons:</p>
+<li>It makes JavaScript as a server side language,</li>
+<li>It is lightweight and very fast to establish a web server,</li>
+<li>Its non-blocking I/O feature makes easier to scale</li>
+</br>
+<p>Here is a description of Node.js from its site:</br>
+    Node.js® is a platform built on Chrome's JavaScript runtime
+    for easily building fast, scalable network applications.  Node.js
+    uses an event-driven, non-blocking I/O model that makes it
+    lightweight and efficient, perfect for data-intensive real-time
+    applications that run across distributed devices.
+</p>
+</br>
+<p>And look how fast and easy it establishes a web server:</p>
+<pre class="sh_sourceCode"><span class="sh_keyword">var</span> http <span class="sh_symbol">=</span> <span class="sh_function">require</span><span class="sh_symbol">(</span><span class="sh_string">'http'</span><span class="sh_symbol">);</span>
+http<span class="sh_symbol">.</span><span class="sh_function">createServer</span><span class="sh_symbol">(</span><span class="sh_keyword">function</span> <span class="sh_symbol">(</span>req<span class="sh_symbol">,</span> res<span class="sh_symbol">)</span> <span class="sh_cbracket">{</span>
+  res<span class="sh_symbol">.</span><span class="sh_function">writeHead</span><span class="sh_symbol">(</span><span class="sh_number">200</span><span class="sh_symbol">,</span> <span class="sh_cbracket">{</span><span class="sh_string">'Content-Type'</span><span class="sh_symbol">:</span> <span class="sh_string">'text/plain'</span><span class="sh_cbracket">}</span><span class="sh_symbol">);</span>
+  res<span class="sh_symbol">.</span><span class="sh_function">end</span><span class="sh_symbol">(</span><span class="sh_string">'Hello World</span><span class="sh_specialchar">\n</span><span class="sh_string">'</span><span class="sh_symbol">);</span>
+<span class="sh_cbracket">}</span><span class="sh_symbol">).</span><span class="sh_function">listen</span><span class="sh_symbol">(</span><span class="sh_number">1337</span><span class="sh_symbol">,</span> <span class="sh_string">'127.0.0.1'</span><span class="sh_symbol">);</span>
+console<span class="sh_symbol">.</span><span class="sh_function">log</span><span class="sh_symbol">(</span><span class="sh_string">'Server running at http://127.0.0.1:1337/'</span><span class="sh_symbol">);</span></pre>
+
+</br>
+<p>Node.js is the very raw material, it helps you to solve some fundamental technique issues,
+    like: TCP/IP, a server-side coding language based on JavaScript.
+    But if you want to establish a http server, you still have a lot of things to do.
+    You need a web application framework for Node.js that provides you HTTP fundamentals.
+    The framework is out-of-box: <a href="http://expressjs.com/" target="_blank">'Express.js'</a></p>
+
+<p>'Express.js' provides:</p>
+<li>A web application framework,</li>
+<li>Http request api,</li>
+<li>Http response api,</li>
+<li>Http router api,</li>
+<li>Middleware supports to allow you inject your codes into http requests and responses.</li>
+
+</br>
+<p>We are now having the coding language and the framework technologies.
+    We can now develop our web application...... with a text editor?
+    Of course, but if you want develop efficiently, you need an IDE.
+    Eclipse is not my cup of tea, there is a good IDE for JavaScript, the smartest JavaScript IDE: <a
+            href="http://www.jetbrains.com/webstorm/index.html" target="_blank">'WebStorm'.</a></p>
+
+</br>
+<p>Are HTML5, CSS, and JavaScript enough for the client side coding? Yes, but very raw.
+    If you do your work based on these 3 raw technologies,you won't get your web application running after 1 year.
+    Thanks for the open-source community,
+    you have <a href="http://getbootstrap.com/" target="_blank">'Bootstrap'</a> for a good appearance, and
+    <a href="https://angularjs.org/" target="_blank">'AngularJS'</a> for dynamic views.
+
+    </br>
+    Both 'Bootstrap'(provided by Twitter) and 'AngularJS'(provided by Google) are big frameworks which need time to handle.
+    They are not easier than Node.js or Express.js.
+    Hope you already have some knowledge on 'HTTP, HTML, CSS, and JavaScript'.
+</p>
+
+<p>
+    We can use 'WebStorm' to do server-side testing and debug, but what about the client-side testing and debug tools?
+    My suggestion is using Chrome Developer Tools. It is good enough: doing CSS adjustment in a WYSIWYG way, and debug JavaScript on-hands.
+</p>
+
+</br>
+<p>One more thing: how to persist the data? </br>
+    This is not a question 5 years ago, but a difficult choice nowadays.
+    Since the NoSQL trends, we now have a lot of DB technologies:
+</p>
+<li><a href="http://www.mongodb.org/" target="_blank">'MongoDB'</a>,
+    a Document-Oriented storage in JSON-style. Seems to be a good companion with Node.js.</li>
+<li><a href="http://memcached.org/" target="_blank">'Memcached'</a>,
+    a Key-Value in-memory storage caching system, but not persists data.</li>
+<li><a href="http://redis.io/" target="_blank">'Redis'</a>,
+    a Key-Value in-memory storage  system which persists data. </li>
+<li><a href="http://www.mysql.com/" target="_blank">'MySQL'</a>,
+    The most popular open-source RDS.</li>
+<p>What are my choices? It took me 1 week to make the decision: 'MySql' and 'Memcached'.
+    'MongoDB' is indeed a good companion with Node.js with its JSON-stype storage(without data conversion in Node.js).
+    But the schema change is not smooth, and loses data!
+    So I design a new data schema based on RDS which is described in Chapter 04.</br>
+    'Redis' is too big compared with 'Memcached',
+    I need a lightweight cache system which data persistence is not necessarily.
+</p>
+
+</br>
+<p>Already a lot of technologies, frameworks, and tools, aren't they? But still not enough.
+    Here are some others which are also very useful and necessary, just name a few:
+</p>
+<li><a href="https://github.com/" target="_blank">'GitHub'</a>,
+    Your code repository.</li>
+<li><a href="http://bower.io/" target="_blank">'Bower'</a>,
+    JavaScript package management tool.</li>
+<li><a href="http://gruntjs.com/" target="_blank">'Gruntjs'</a>,
+    JavaScript unit testing tool.</li>
+<li><a href="http://passportjs.org/" target="_blank">'Passport.js'</a>,
+    A authentication middleware for Node.js.</li>
+<li><a href="http://underscorejs.org/" target="_blank">'UnderScore.js'</a>,
+    A JavaScript library that provides a whole mess of useful functional programming helpers without extending any built-in objects.</li>
+
+</br>
+<p>Hope you are not scared! Now we can really start to develop our web application. Go to chapter 03:
+    <a ng-click="openAccordionGroup(3)">"First of all, user authentication"</a>
+</p>
