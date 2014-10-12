@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --require should --reporter dot --check-leaks test/unit_tests/"
   },
   "dependencies": {
     "express": "~4.9.0",
@@ -17,9 +18,13 @@
     "mysql": "~2.5.0",
     "underscore": "~1.7.0",
     "async": "~0.9.0",
-    "passport":"~0.2.1",
-    "passport-local":"~1.0.0",
+    "passport": "~0.2.1",
+    "passport-local": "~1.0.0",
     "passport-http": "~0.2.2",
     "node-uuid": "~1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^1.21.4",
+    "should": "^4.0.4"
   }
 }

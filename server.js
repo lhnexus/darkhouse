@@ -22,9 +22,12 @@ app.set('view engine', 'html');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'app')));
 
-
-
-app.use(logger('dev'));
+//app.get('env') return the environment variable NODE_ENV, same as process.env.NODE_ENV
+if (app.get('env') === 'development') {
+    app.use(logger('dev'));
+}else{
+    app.use(logger());
+}
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

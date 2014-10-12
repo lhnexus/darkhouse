@@ -69,7 +69,6 @@ blog.factory('blogs', ['$resource', function($resource){
     var blog_array = [];
     return{
         list: function(){
-            blog_array = [];
             blog_array = [
                 {
                     id:1,
