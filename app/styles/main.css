@@ -2,6 +2,7 @@ body {
     padding-top: 50px;
     padding-bottom: 30px;
     background-color: #eee;
+    font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
 hr {
@@ -111,5 +112,34 @@ hr {
     font-size: 16px;
     font-weight: bold;
 }
+.blog_title{
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #e7e7eb;
+    line-height: 24px;
+    font-weight: 700;
+    font-size: 20px;
+    word-wrap: break-word;
+}
+.blog_content{
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: 1em;
+    font-size: 18px;
+}
+.blog_content blockquote{
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: 1em;
+    white-space: pre-wrap;
+    font-size: 16px;
+    border-left-width: 10px;
+    border-left-style: solid;
+    border-left-color: rgb(102, 102, 102);
+    background-color: rgb(238, 238, 238);
+    padding:10px;
+}
+
+
 
 
