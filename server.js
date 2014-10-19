@@ -1,4 +1,4 @@
-var debug = require('debug')('darkhouse');
+var debug = require('debug')('darkhouse:server');
 var _ = require('underscore');
 var express = require('express');
 var session = require('express-session')
@@ -33,6 +33,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({name: 'sessionID',
                  secret:'darkhouse',
+                 saveUninitialized: true,
+                 resave: true,
                  cookie: { httpOnly: false }
        }));
 app.use(passport.initialize());
@@ -50,14 +52,7 @@ async.series([
         passport.use(auth.LocalStrategy);
         passport.serializeUser(auth.serializeUser);
         passport.deserializeUser(auth.deserializeUser);
-
-/*        var user = require('./models/user.js');
-       user.getUserByEmail('zklee@hotmail.com', function(err, userAttributes){
-           for(var i in userAttributes){
-               console.log(userAttributes[i].attr_name+"="+userAttributes[i].attr_value);
-           }
-       });*/
-       callback(null, 0);
+        callback(null, 0);
     },
     function(callback){
         var routes = require('./server/server_routes');
@@ -84,7 +79,7 @@ async.series([
         }
 
         // production error handler
-        // no stacktraces leaked to user
+        // no stack traces leaked to user
         app.use(function(err, req, res, next) {
             res.status(err.status || 500);
             res.render('server_error', {

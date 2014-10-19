@@ -1,6 +1,7 @@
 /**
  * Created by VinceZK on 9/16/14.
  */
+var debug = require('debug')('darkhouse:conn_mysql_mdb');
 var async = require('async');
 var mysql = require('mysql');
 var pool = mysql.createPool({
@@ -34,9 +35,15 @@ module.exports = {
     },
 
     loadEntities: function(waitForFinish) {
+        if (entities.length > 0){
+            waitForFinish(null);
+            return;
+        }
+
         var selectSQL1 = "select * from ENTITY where TENANT_DOMAIN = "
             + pool.escape(tenant_domain);
         pool.query(selectSQL1, function (err, entityRows) {
+            if(err)throw err; //Actually, the err cannot be catched outside as the nodejs async mechanism
             async.map(entityRows, function (entityRow, callback) {
                 var entity = {
                     TENANT_DOMAIN: entityRow.TENANT_DOMAIN,
@@ -75,7 +82,8 @@ module.exports = {
 
             }, function (err, results) {
                 if (err) {
-                    console.log("There is error in loading attributes!")
+                    debug("Error occurs in loading attributes! \n" +
+                          "Error message: %s", err);
                     waitForFinish(err, results);
                 }
                 waitForFinish(null, "Entities are initialized!" + results);
@@ -83,24 +91,104 @@ module.exports = {
         })
     },
 
-    executeSQL: function(selectSQL,callback,waitForFinish) {
+    executeSQL: function(selectSQL,callback) {
         pool.getConnection(function (err, conn) {
             if (err) {
-                console.log("mySql POOL ==> " + err);
-                return callback(err);
+                debug("mySql POOL ==> %s", err);
+                throw("mySql POOL ==> " + err);
             }
 
             conn.query(selectSQL, function (err, rows) {
                 if (err) {
-                    console.log("mySql Select ==> " + err);
+                    debug("mySql Select ==> %s", err);
                     conn.release();
-                    callback(err);
+                    return callback(err);
                 }
                 conn.release();
                 callback(null, rows);
-                if(waitForFinish !== undefined)
-                   waitForFinish(null, selectSQL);
             })
         });
+    },
+
+    doUpdatesParallel: function(updateSQLs, callback){
+        pool.getConnection(function(err, conn){
+            if (err) {
+                debug("mySql POOL ==> %s", err);
+                throw("mySql POOL ==> " + err);
+            }
+            conn.beginTransaction(function(err){
+                if (err) {
+                    debug("mySql TRANSACTION error ==> %s", err);
+                    throw("mySql TRANSACTION ==> " + err);
+                }
+
+                async.map(updateSQLs, function (updateSQL, callback){
+                    conn.query(updateSQL, function(err,result){
+                        if (err) {
+                            debug("mySql Update Error ==> %s", updateSQL);
+                            conn.rollback(function(){
+                                return callback(err, result);
+                            });
+                        };
+                        callback(null,  result);
+                    })
+                },function (err, results) {
+                    if (err) {
+                        debug("Error occurs in doUpdatesParallel() when executing update SQLs ==> %s", err);
+                        return callback(err, results);
+                    }
+                    conn.commit(function(err){
+                        if(err){
+                            debug("mySql Commit ==> %s",err)
+                            conn.rollback(function(){
+                                return callback(err, results);
+                            });
+                        }
+                        callback(null, results);
+                    })
+                })
+            })
+        })
+    },
+
+    doUpdatesSeries: function(updateSQLs, callback){
+        pool.getConnection(function(err, conn){
+            if (err) {
+                debug("mySql POOL ==> %s", err);
+                throw("mySql POOL ==> " + err);
+            }
+            conn.beginTransaction(function(err){
+                if (err) {
+                    debug("mySql TRANSACTION error ==> %s", err);
+                    throw("mySql TRANSACTION ==> " + err);
+                }
+
+                async.mapSeries(updateSQLs, function (updateSQL, callback){
+                    conn.query(updateSQL, function(err,result){
+                        if (err) {
+                            debug("mySql Update Error ==> %s", updateSQL);
+                            conn.rollback(function(){
+                                return callback(err, result);
+                            });
+                        };
+                        callback(null, result);
+                    })
+                },function (err, results) {
+                    if (err) {
+                        debug("Error occurs in doUpdatesSeries() when executing update SQLs ==> %s", err);
+                        return callback(err, results);
+                    }
+                    conn.commit(function(err){
+                        if(err){
+                            debug("mySql Commit ==> %s",err)
+                            conn.rollback(function(){
+                                return callback(err, results);
+                            });
+                        }
+                        callback(null, results);
+                    })
+                })
+            })
+        })
     }
 };
