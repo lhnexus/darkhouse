@@ -7,7 +7,7 @@ var blogId;
 var blogObj;
 var async = require('async');
 
-describe.only('blog entity tests', function() {
+describe('blog entity tests', function() {
     before('Initialize the MDB meta data', function (done) {
         async.series([
             function(callback){
@@ -23,23 +23,23 @@ describe.only('blog entity tests', function() {
                     TITLE: 'Compose Your First Single Page Application',
                     ABSTRACT: 'If you want to compose a web application, you must consider following stuff...',
                     AUTHOR: 'VinceZK'
-                }
+                };
                 callback(done());
             }
         ])
-    })
+    });
 
     describe('#addBlog(blog)', function () {
         it('should create a new blog in DB, and return a blog ID > 0', function (done) {
             blog.addBlog(blogObj,function(err,retBlogID){
                 if(err)throw err;
-                blogId = retBlogID
+                blogId = retBlogID;
                 blogId.should.be.above(0);
                 blogObj.ID = blogId;
                 done();
             });
         })
-    })
+    });
 
     describe('#getBlogFromId(blogId)', function () {
         it('should return a blog in JSON format with ID = blogId', function (done) {
@@ -48,7 +48,7 @@ describe.only('blog entity tests', function() {
                 retBlogObj.should.eql(blogObj);
                 done();
             });
-        })
+        });
 
         it('should return a null object as the blogId is not exist', function (done) {
             blog.getBlogFromId(999999,function(err,retBlogObj){
@@ -56,8 +56,8 @@ describe.only('blog entity tests', function() {
                 (retBlogObj === null).should.be.true;
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe('#softDeleteBlog(blogId)', function () {
         it('should set the DEL flag to 1', function (done) {
@@ -66,7 +66,7 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(1);
                 done();
             });
-        })
+        });
 
         it('should return a message says the blog ID 999999 is not exist!', function (done) {
             blog.softDeleteBlog(999999, function(err, retCode){
@@ -74,16 +74,17 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(0);
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe('#restoreBlog(blogId)', function () {
         it('should set the DEL flag to 0', function (done) {
-            blog.restoreBlog(blogId, function(err){
+            blog.restoreBlog(blogId, function(err,retCode){
                 (err === null).should.be.true;
+                retCode.should.equal(1);
                 done();
             });
-        })
+        });
 
         it('should return a message says the blog ID 999999 is not exist!', function (done) {
             blog.restoreBlog(999999, function(err, retCode){
@@ -91,8 +92,8 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(0);
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe('#hardDeleteBlog(blogId)', function () {
         before('Soft delete the blogId', function(done){
@@ -101,7 +102,7 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(1);
                 done();
             });
-        })
+        });
 
         it('should delete the blog from DB!', function (done) {
             blog.hardDeleteBlog(blogId, function(err,retCode){
@@ -109,7 +110,7 @@ describe.only('blog entity tests', function() {
                 retCode.should.be.above(0);
                 done();
             });
-        })
+        });
 
         it('should not delete the blog without soft-deletion first!', function (done) {
             blog.hardDeleteBlog(1, function(err,retCode){
@@ -117,7 +118,7 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(-1);
                 done();
             });
-        })
+        });
 
         it('should return 0 as the blogId = 999999 is not exist!', function (done) {
             blog.hardDeleteBlog(999999, function(err, retCode){
@@ -125,17 +126,16 @@ describe.only('blog entity tests', function() {
                 retCode.should.equal(0);
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe('#getBlogList(blogId)', function () {
         it('should return a list of blog items', function (done) {
             blog.getBlogList(function(err, list){
                 (err === null).should.be.true;
                 list.length.should.be.above(0);
-                list[0].should.have.properties('AUTHOR','ID','NAME','PUBLISH_TIME');
                 done();
             });
-        })
-    })
-})
+        });
+    });
+});

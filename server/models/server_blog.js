@@ -1,7 +1,7 @@
 /**
  * Created by VinceZK on 10/9/14.
  */
-'use strict'
+'use strict';
 var debug = require('debug')('darkhouse:server_blog');
 var entityDB = require('./connections/conn_mysql_mdb.js');
 var _ = require('underscore');
@@ -19,6 +19,7 @@ module.exports = {
      * Save the blog JSON object to mysql DB
      * @param blog
      * return an auto incremented blog ID in callback functions
+     * @param callback
      */
     addBlog:function(blog,callback){
         var recGuid = guid.genTimeBased();
@@ -65,7 +66,7 @@ module.exports = {
                         insertSQLs.push(_.clone(insertSQL));
                     }
                 }
-            })
+            });
             entityDB.doUpdatesParallel(insertSQLs,  function(err){
                 if(err){
                     debug("Error occurs in addBlog() when doing parallel updates.\n" +
@@ -116,9 +117,9 @@ module.exports = {
                 _.each(attributes,function(attribute){
                     attrMeta = _.find(blogEntity.ATTRIBUTES,function(attr){
                         return attr['ATTR_GUID'] === attribute.ATTR_GUID;
-                    })
+                    });
                     blogObj[attrMeta.ATTR_NAME] = attribute.VALUE0;
-                })
+                });
 
                 callback(null,  blogObj);
             })
@@ -230,7 +231,7 @@ module.exports = {
                 if(err){
                     debug("Error occurs in hardDeleteBlog() when doing parallel updates. \n" +
                         "Error info: %s\n" +
-                        "SQL statements: %o\n", err,  deleteSQLs);
+                        "SQL statements: %s\n", err,  deleteSQLs);
                     return callback(err);
                 }
                 retCode = results.length;
@@ -274,14 +275,14 @@ module.exports = {
 
                 attrMeta = _.find(blogEntity.ATTRIBUTES,function(attr){
                     return attr['ATTR_GUID'] === attribute.ATTR_GUID;
-                })
+                });
                 blogItem[attrMeta.ATTR_NAME] = attribute.ATTR_VALUE;
-            })
+            });
             if(Object.keys(blogItem).length > 0){
                 blogList.push(blogItem);
             }
 
             callback(null, blogList);
-        })
+        });
     }
-}
+};

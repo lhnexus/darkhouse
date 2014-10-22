@@ -5,6 +5,7 @@ var debug = require('debug')('darkhouse:conn_mysql_mdb');
 var async = require('async');
 var mysql = require('mysql');
 var pool = mysql.createPool({
+    connectionLimit : 10,
     host: 'localhost',
     user: 'nodejs',
     password: 'nodejs',
@@ -35,10 +36,7 @@ module.exports = {
     },
 
     loadEntities: function(waitForFinish) {
-        if (entities.length > 0){
-            waitForFinish(null);
-            return;
-        }
+        if (entities.length > 0) return waitForFinish(null);
 
         var selectSQL1 = "select * from ENTITY where TENANT_DOMAIN = "
             + pool.escape(tenant_domain);
@@ -53,29 +51,16 @@ module.exports = {
                     MARSHALL: entityRow.MARSHALL,
                     VERSION_NO: entityRow.VERSION_NO,
                     ATTRIBUTES: []
-                }
+                };
 
                 var selectSQL2 = "select * from ATTRIBUTE where TENANT_DOMAIN = "
                     + pool.escape(tenant_domain) + " and RELATION_ID = "
                     + pool.escape(entityRow.ENTITY_ID);
                 pool.query(selectSQL2, function (err, attrRows) {
                     if (err)return callback(err, entityRow.ENTITY_ID);
-                    for (var i in attrRows) {
-                        var attribute = {
-                            ATTR_GUID: attrRows[i].ATTR_GUID,
-                            TENANT_DOMAIN: attrRows[i].TENANT_DOMAIN,
-                            RELATION_ID: attrRows[i].RELATION_ID,
-                            ATTR_NAME: attrRows[i].ATTR_NAME,
-                            DATA_TYPE: attrRows[i].DATA_TYPE,
-                            DATA_LENGTH: attrRows[i].DATA_LENGTH,
-                            SEARCHABLE: attrRows[i].SEARCHABLE,
-                            NOT_NULL: attrRows[i].NOT_NULL,
-                            UNIQUE: attrRows[i].UNIQUE,
-                            DOMAIN_ID: attrRows[i].DOMAIN_ID,
-                            FINALIZE: attrRows[i].FINALIZE
-                        };
-                        entity.ATTRIBUTES.push(attribute);
-                    }
+                    attrRows.forEach(function(attrRow){
+                        entity.ATTRIBUTES.push(attrRow);
+                    });
                     entities.push(entity);
                     callback(null, entityRow.ENTITY_ID);
                 });
@@ -127,23 +112,28 @@ module.exports = {
                         if (err) {
                             debug("mySql Update Error ==> %s", updateSQL);
                             conn.rollback(function(){
-                                return callback(err, result);
+                                callback(err, result);
                             });
-                        };
+                            return;
+                        }
                         callback(null,  result);
                     })
                 },function (err, results) {
                     if (err) {
                         debug("Error occurs in doUpdatesParallel() when executing update SQLs ==> %s", err);
+                        conn.release();
                         return callback(err, results);
                     }
                     conn.commit(function(err){
                         if(err){
-                            debug("mySql Commit ==> %s",err)
+                            debug("mySql Commit ==> %s",err);
                             conn.rollback(function(){
-                                return callback(err, results);
+                                callback(err, results);
                             });
+                            conn.release();
+                            return;
                         }
+                        conn.release();
                         callback(null, results);
                     })
                 })
@@ -168,27 +158,39 @@ module.exports = {
                         if (err) {
                             debug("mySql Update Error ==> %s", updateSQL);
                             conn.rollback(function(){
-                                return callback(err, result);
+                                callback(err, result);
                             });
-                        };
+                            return;
+                        }
                         callback(null, result);
                     })
                 },function (err, results) {
                     if (err) {
                         debug("Error occurs in doUpdatesSeries() when executing update SQLs ==> %s", err);
+                        conn.release();
                         return callback(err, results);
                     }
                     conn.commit(function(err){
                         if(err){
-                            debug("mySql Commit ==> %s",err)
+                            debug("mySql Commit ==> %s",err);
                             conn.rollback(function(){
-                                return callback(err, results);
+                                callback(err, results);
                             });
+                            conn.release();
+                            return;
                         }
+                        conn.release();
                         callback(null, results);
                     })
                 })
             })
         })
+    },
+
+    closeMDB: function(){
+        delete entities;
+        pool.end(function(err){
+            if(err)debug('mysql connection pool closing error: %s',err);
+        });
     }
 };

@@ -8,12 +8,12 @@ describe('mysql connections tests', function(){
     before('Initialize the MDB meta data', function(done){
         entityDB.setTenantDomain('darkhouse.com');
         entityDB.loadEntities(done);
-    })
+    });
 
     describe('#loadEntities()', function(){
         it('should return 3 entities', function(){
             entityDB.entities.length.should.equal(3);
-        })
+        });
 
         it('should have the "blog" entity', function(){
             //assert.equal(entityDB.entities.length,3);
@@ -26,8 +26,9 @@ describe('mysql connections tests', function(){
                 }
             }
             hasBlog.should.be.true;
+            //console.log(entityDB.entities[1].ATTRIBUTES);
         })
-    })
+    });
 
     describe('#executeSQL()', function(){
         it('should return tenant "darkhouse.com"', function(done){
@@ -38,7 +39,7 @@ describe('mysql connections tests', function(){
                 rows[0].TENANT_DOMAIN.should.equal('darkhouse.com');
                 done();
             })
-        })
+        });
 
         it('should return "User" entity name', function(done){
             var selectSQL = "SELECT * FROM ENTITY WHERE TENANT_DOMAIN = "
@@ -72,7 +73,7 @@ describe('mysql connections tests', function(){
                 results.length.should.equal(2);
                 done();
             });
-        })
+        });
 
         it("should return duplicate error",function(done){
             var insertSQLs = [];
@@ -92,7 +93,7 @@ describe('mysql connections tests', function(){
                 err.code.should.equal('ER_DUP_ENTRY');
                 done();
             });
-        })
+        });
 
         it("should update DEL flag to 1",function(done){
             var updateSQLs = [];
@@ -106,7 +107,7 @@ describe('mysql connections tests', function(){
                 results.length.should.equal(1);
                 done();
             });
-        })
+        });
 
         it("should have the ENTITY_INSTANCES.DEL = 1",function(done){
             var selectSQL = "SELECT * FROM ENTITY_INSTANCES WHERE TENANT_DOMAIN = "
@@ -119,7 +120,7 @@ describe('mysql connections tests', function(){
                 rows[0].DEL.should.equal(1);
                 done();
             })
-        })
+        });
 
         it("should delete the entry in both the 2 tables",function(done){
             var delSQLs = [];
@@ -137,7 +138,7 @@ describe('mysql connections tests', function(){
                 done();
             });
         })
-    })
+    });
 
     describe('#doUpdatesSerious()', function (){
         var recGuid = '93D75A540EF04ACF91D7A89BE05A79DF';
@@ -161,7 +162,7 @@ describe('mysql connections tests', function(){
                 results[1].insertId.should.be.above(0);
                 done();
             });
-        })
+        });
 
         it("should delete the entry in both the 2 tables",function(done){
             var delSQLs = [];

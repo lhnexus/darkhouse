@@ -11,6 +11,9 @@ var bodyParser = require('body-parser');
 var async = require('async');
 var passport = require('passport');
 //var uuid = require('node-uuid');
+var entityDB;
+var auth;
+
 var app = express();
 
 // views engine setup
@@ -43,12 +46,12 @@ app.use(passport.session());
 
 async.series([
     function(callback){
-        var entityDB = require('./server/models/connections/conn_mysql_mdb.js');
+        entityDB = require('./server/models/connections/conn_mysql_mdb.js');
         entityDB.setTenantDomain('darkhouse.com');
         entityDB.loadEntities(callback);
     },
     function(callback){
-        var auth = require('./server/controllers/server_auth.js');
+        auth = require('./server/controllers/server_auth.js');
         passport.use(auth.LocalStrategy);
         passport.serializeUser(auth.serializeUser);
         passport.deserializeUser(auth.deserializeUser);
@@ -92,6 +95,13 @@ async.series([
     },
     function(callback){
         app.set('port', process.env.PORT || 3000);
+
+        process.on('SIGINT',function(){
+            console.log("Closing DarkHouse....");
+            entityDB.closeMDB();
+            process.exit()
+        });
+
         var server = app.listen(app.get('port'), function() {
             debug('Express server listening on port ' + server.address().port);
         });
